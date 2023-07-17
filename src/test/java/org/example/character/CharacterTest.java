@@ -1,7 +1,5 @@
 package org.example.character;
 
-import org.example.attacker.Attacker;
-
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -9,8 +7,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class CharacterTest {
 
     Character character = new Character();
-    Character character2 = new Character();
-    Attacker attacker = new Attacker();
 
     @Test
     public void Health_should_starting_at_1000(){
@@ -66,21 +62,90 @@ public class CharacterTest {
 
     @Test
     public void character_cannot_deal_damage_to_itself(){
-        character.inflictDamage(character,10);
+        character.inflictDamage(character, 10);
         assertEquals(1000, character.getHealth());
     }
 
     @Test
     public void character_can_only_heal_itself(){
-
+        character.autoHeal(character, 100);
+        assertEquals(1000, character.getHealth());
     }
 
     @Test
-    public void if_target_is_5_or_more_levels_above_the_attacker_Damage_is_reduced_by_50(){
-
+    public void target_is_5_or_more_Levels_above_the_attacker_Damage_is_reduced_by_50_percent(){
+        Character attacker = new Character();
+        character.setLevel(6);
+        attacker.setLevel(1);
+        attacker.calculateDamage(character, attacker, 400);
+        assertEquals(800, character.getHealth());
     }
 
+    @Test
+    public void target_is_5_or_more_Levels_below_attacker_Damage_is_increased_by_50(){
+        Character attacker = new Character();
+        character.setLevel(1);
+        attacker.setLevel(7);
+        attacker.calculateDamage(character, attacker, 200);
+        assertEquals(700, character.getHealth());
+    }
 
+    @Test
+    public void Melee_fighters_have_an_range_of_2_meters(){
+        Character melee = new Character();
+        melee.attackMelee(melee, 3.5, 100);
+        assertEquals(1000, melee.getHealth());
+    }
 
+    @Test
+    public void Ranged_fighters_have_a_range_of_meters(){
+        Character ranged = new Character();
+        ranged.attackRanged(ranged, 22, 100);
+        assertEquals(1000, ranged.getHealth());
+    }
+
+    @Test
+    public void charactersCanJoinAndLeaveFactions() {
+        character.joinFaction("Faction1");
+        character.joinFaction("Faction2");
+        assertTrue(character.isAlly(new Character() {{
+            joinFaction("Faction1"); }}));
+        assertTrue(character.isAlly(new Character() {{
+            joinFaction("Faction2"); }}));
+        character.leaveFaction("Faction1");
+        assertFalse(character.isAlly(new Character() {{
+            joinFaction("Faction1"); }}));
+        assertTrue(character.isAlly(new Character() {{
+            joinFaction("Faction2"); }}));
+    }
+
+    @Test
+    public void allies_Cannot_Inflict_Damage_On_Each_Other() {
+        Character attacker = new Character();
+        attacker.joinFaction("Faction1");
+        character.joinFaction("Faction1");
+        attacker.attackMelee(character, 1, 100);
+        assertEquals(1000, character.getHealth());
+    }
+
+    @Test
+    public void allies_Can_Heal_EachOther() {
+        Character healer = new Character();
+        healer.joinFaction("Faction1");
+        healer.damage(100);
+        character.joinFaction("Faction1");
+        character.damage(100);
+        healer.autoHeal(character,50);
+        assertEquals(950, character.getHealth());
+    }
 }
+
+
+
+
+
+
+
+
+
 
