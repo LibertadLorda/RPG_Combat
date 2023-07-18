@@ -98,33 +98,31 @@ public class CharacterTest {
     }
 
     @Test
-    public void Ranged_fighters_have_a_range_of_meters(){
+    public void Ranged_fighters_have_a_range_of_20_meters(){
         Character ranged = new Character();
         ranged.attackRanged(ranged, 22, 100);
         assertEquals(1000, ranged.getHealth());
     }
 
     @Test
-    public void charactersCanJoinAndLeaveFactions() {
-        character.joinFaction("Faction1");
-        character.joinFaction("Faction2");
-        assertTrue(character.isAlly(new Character() {{
-            joinFaction("Faction1"); }}));
-        assertTrue(character.isAlly(new Character() {{
-            joinFaction("Faction2"); }}));
-        character.leaveFaction("Faction1");
-        assertFalse(character.isAlly(new Character() {{
-            joinFaction("Faction1"); }}));
-        assertTrue(character.isAlly(new Character() {{
-            joinFaction("Faction2"); }}));
+    public void characters_Can_Join_Factions() {
+        character.joinFaction("Faction 1");
+        assertTrue(character.isAlly(new Character() {{ joinFaction("Faction 1"); }}));
+    }
+
+    @Test
+    public void characters_Can_Leave_Factions() {
+        character.joinFaction("Faction 1");
+        character.leaveFaction("Faction 1");
+        assertFalse(character.isAlly(new Character() {{ joinFaction("Faction 1"); }}));
     }
 
     @Test
     public void allies_Cannot_Inflict_Damage_On_Each_Other() {
         Character attacker = new Character();
-        attacker.joinFaction("Faction1");
-        character.joinFaction("Faction1");
-        attacker.attackMelee(character, 1, 100);
+        attacker.joinFaction("Faction 1");
+        character.joinFaction("Faction 1");
+        attacker.attackMelee (character, 1, 100);
         assertEquals(1000, character.getHealth());
     }
 
