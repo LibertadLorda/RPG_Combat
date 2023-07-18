@@ -136,6 +136,7 @@ public class CharacterTest {
         healer.autoHeal(character,50);
         assertEquals(950, character.getHealth());
     }
+
 }
 
 

@@ -9,7 +9,7 @@ public class Character {
     private int health = 1000;
     private int level = 1;
     private boolean alive = true;
-    private Set<String> factions = new HashSet<>();
+    private final Set<String> factions = new HashSet<>();
 
     public boolean isAlive() {
         return alive;
@@ -48,12 +48,11 @@ public class Character {
         }
     }
 
-    public int inflictDamage(Character target, int damage) {
+    public void inflictDamage(Character target, int damage) {
         if (target == this || isAlly(target)) {
-            return 0;
+            return;
         }
         target.damage(damage);
-        return target.health;
     }
 
     public void autoHeal(Character target, int heal) {
